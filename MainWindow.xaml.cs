@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Web;
 
 namespace Lab6RestClient
 {
@@ -112,12 +113,16 @@ namespace Lab6RestClient
                         var json = JsonSerializer.Serialize(person);
                         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                        var responseMessage = await client.PostAsync("api/people", content);
+                        var responseMessage = await client.PostAsync("api/people?city="+cityCheckBox.IsChecked.ToString(), content);
                         if (responseMessage.StatusCode == System.Net.HttpStatusCode.Created)
                         {
                             MessageBox.Show("Pomyślnie dodano " + person.ToString(), "OK", MessageBoxButton.OK, MessageBoxImage.Information);
                             GetPeople();
-                        }                   
+                        }
+                        else if (responseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            MessageBox.Show(await responseMessage.Content.ReadAsStringAsync(),"OK", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
                 }
                 else
                 {                     
@@ -163,6 +168,32 @@ namespace Lab6RestClient
                 {
                     MessageBox.Show("Niepoprawna wartość w polu Rok", "", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private async void FindPersonButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var query = HttpUtility.ParseQueryString(string.Empty);
+                query["name"] = NameTB.Text;
+                query["surname"] = SurnameTB.Text;
+                query["city"] = CityTB.Text;
+                query["year"] = YearTB.Text;
+                query["lowercase"] = lowercaseCheckBox.IsChecked.ToString();
+                query["contains"] = containsCheckBox.IsChecked.ToString();
+                string queryString = query.ToString();
+
+                var streamTask = client.GetStreamAsync("api/people/find?" + queryString);
+                var people = await JsonSerializer.DeserializeAsync<List<Person>>(await streamTask);
+                PeopleListBox.ItemsSource = people;
             }
             catch (Exception ex)
             {

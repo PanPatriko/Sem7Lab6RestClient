@@ -92,8 +92,10 @@
                 <Button x:Name="DelPersonButton" Click="DelPersonButton_Click">Usuń</Button>
                 <Button x:Name="AddPersonButton" Click="AddPersonButton_Click">Dodaj</Button>
                 <Button x:Name="EditPersonButton" Click="EditPersonButton_Click">Edytuj</Button>
+                <Button x:Name="FindPersonButton" Click="FindPersonButton_Click">Wyszukaj</Button>
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
@@ -113,6 +115,9 @@
                     <TextBlock Grid.Row="4" >Rok</TextBlock>
                     <TextBox Grid.Row="4" Grid.Column="1" x:Name="YearTB"></TextBox>
                 </Grid>
+                <CheckBox x:Name="lowercaseCheckBox" Content="Wielkość bez znaczenia"/>
+                <CheckBox x:Name="containsCheckBox" Content="Wyszukiwanie na zawieraną część"/>
+                <CheckBox x:Name="cityCheckBox" Content="Warunek miasta dla nowej osoby"/>
             </StackPanel>
         </ScrollViewer>
         
