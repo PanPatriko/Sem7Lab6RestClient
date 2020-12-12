@@ -71,14 +71,15 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <ScrollViewer>
-            <StackPanel>
+        <ScrollViewer Grid.RowSpan="2">
+            <StackPanel >
                 <Button x:Name="GetPeopleButton" Click="GetPeopleButton_Click">Pobierz liste osób</Button>
                 <Button x:Name="GetPersonButton" Click="GetPersonButton_Click">Pobierz osobe</Button>
                 <Grid>
@@ -122,7 +123,15 @@
         </ScrollViewer>
         
         <ListBox x:Name="PeopleListBox" Grid.Column="1"></ListBox>
-        <ScrollViewer Grid.Column="2">
+        <StackPanel  Grid.Column="1" Grid.Row="1">
+            <TextBlock Text="Login"/>
+            <TextBox x:Name="UsernameTextBox"/>
+            <TextBlock Text="Hasło"/>
+            <PasswordBox x:Name="PasswordBox"/>
+            <Button x:Name="LoginButton" Content="Zaloguj" Click="LoginButton_Click"/>
+        </StackPanel>
+        
+        <ScrollViewer Grid.Column="2" Grid.RowSpan="2">
             <StackPanel>
                 <TextBlock>Id</TextBlock>
                 <TextBlock Style="{StaticResource TitleText}" Text="{Binding ElementName=PeopleListBox, Path=SelectedItem.Id }"></TextBlock>
