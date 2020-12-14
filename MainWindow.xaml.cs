@@ -28,6 +28,8 @@ namespace Lab6RestClient
     {
         HttpClient client;
         private string token;
+        private string password;
+        private string username;
         public MainWindow()
         {
             InitializeComponent();
@@ -38,7 +40,16 @@ namespace Lab6RestClient
         {
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            if (BasicCheckBox.IsChecked ?? false)
+            {
+                var authStr = string.Format("{0}:{1}", username, password);
+                var authBytes = Encoding.UTF8.GetBytes(authStr);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authBytes));
+            }
+            else
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
 
             var responseMessage = await client.GetAsync("api/people");
             if (responseMessage.StatusCode == System.Net.HttpStatusCode.OK)
@@ -70,7 +81,16 @@ namespace Lab6RestClient
             {
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                if (BasicCheckBox.IsChecked ?? false)
+                {
+                    var authStr = string.Format("{0}:{1}", username, password);
+                    var authBytes = Encoding.UTF8.GetBytes(authStr);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authBytes));
+                }
+                else
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
 
                 var responseMessage = await client.GetAsync("api/people/" + IdTB.Text);
                 if (responseMessage.StatusCode == System.Net.HttpStatusCode.OK)
@@ -98,7 +118,16 @@ namespace Lab6RestClient
                 {
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    if (BasicCheckBox.IsChecked ?? false)
+                    {
+                        var authStr = string.Format("{0}:{1}", username, password);
+                        var authBytes = Encoding.UTF8.GetBytes(authStr);
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authBytes));
+                    }
+                    else
+                    {
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    }
 
                     var responseMessage = await client.DeleteAsync("api/people/" + (PeopleListBox.SelectedItem as Person).Id);
                     if (responseMessage.StatusCode == System.Net.HttpStatusCode.OK)
@@ -124,33 +153,42 @@ namespace Lab6RestClient
             {
                 if(int.TryParse(YearTB.Text, out int n))
                 {
-                        client.DefaultRequestHeaders.Accept.Clear();
-                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    if (BasicCheckBox.IsChecked ?? false)
+                    {
+                        var authStr = string.Format("{0}:{1}", username, password);
+                        var authBytes = Encoding.UTF8.GetBytes(authStr);
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authBytes));
+                    }
+                    else
+                    {
                         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    }
 
-                        Person person = new Person();
-                        person.Name = NameTB.Text;
-                        person.Surname = SurnameTB.Text;
-                        person.City = CityTB.Text;
-                        person.Year = n;
+                    Person person = new Person();
+                    person.Name = NameTB.Text;
+                    person.Surname = SurnameTB.Text;
+                    person.City = CityTB.Text;
+                    person.Year = n;
 
-                        var json = JsonConvert.SerializeObject(person);
-                        var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    var json = JsonConvert.SerializeObject(person);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                        var responseMessage = await client.PostAsync("api/people?city="+cityCheckBox.IsChecked.ToString(), content);
-                        if (responseMessage.StatusCode == System.Net.HttpStatusCode.Created)
-                        {
-                            MessageBox.Show("Pomyślnie dodano " + person.ToString(), "OK", MessageBoxButton.OK, MessageBoxImage.Information);
-                            GetPeople();
-                        }
-                        else if (responseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
-                        {
-                            MessageBox.Show(await responseMessage.Content.ReadAsStringAsync(),"OK", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                        else
-                        {
-                            MessageBox.Show(await responseMessage.Content.ReadAsStringAsync(), "", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
+                    var responseMessage = await client.PostAsync("api/people?city=" + cityCheckBox.IsChecked.ToString(), content);
+                    if (responseMessage.StatusCode == System.Net.HttpStatusCode.Created)
+                    {
+                        MessageBox.Show("Pomyślnie dodano " + person.ToString(), "OK", MessageBoxButton.OK, MessageBoxImage.Information);
+                        GetPeople();
+                    }
+                    else if (responseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        MessageBox.Show(await responseMessage.Content.ReadAsStringAsync(), "OK", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show(await responseMessage.Content.ReadAsStringAsync(), "", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
                 }
                 else
                 {                     
@@ -174,7 +212,16 @@ namespace Lab6RestClient
                     {
                         client.DefaultRequestHeaders.Accept.Clear();
                         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                        if (BasicCheckBox.IsChecked ?? false)
+                        {
+                            var authStr = string.Format("{0}:{1}", username, password);
+                            var authBytes = Encoding.UTF8.GetBytes(authStr);
+                            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authBytes));
+                        }
+                        else
+                        {
+                            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                        }
 
                         Person person = new Person();
                         person.Name = NameTB.Text;
@@ -214,7 +261,16 @@ namespace Lab6RestClient
             {
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                if (BasicCheckBox.IsChecked ?? false)
+                {
+                    var authStr = string.Format("{0}:{1}", username, password); 
+                    var authBytes = Encoding.UTF8.GetBytes(authStr);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authBytes));
+                }
+                else
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
 
                 var query = HttpUtility.ParseQueryString(string.Empty);
                 query["name"] = NameTB.Text;
@@ -247,26 +303,35 @@ namespace Lab6RestClient
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            AuthenticateRequest user = new AuthenticateRequest();
-            user.Username = UsernameTextBox.Text;
-            user.Password = PasswordBox.Password;
-
-            var json = JsonConvert.SerializeObject(user);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var responseMessage = await client.PostAsync("api/user", content);
-            if (responseMessage.StatusCode == System.Net.HttpStatusCode.Created)
+            if (BasicCheckBox.IsChecked ?? false)
             {
-                AuthenticateResponse response = JsonConvert.DeserializeObject<AuthenticateResponse>(await responseMessage.Content.ReadAsStringAsync());
-                token = response.Token;
-                MessageBox.Show("Pomyślnie zalogowano \n" + "Witaj " + response.Username,"", MessageBoxButton.OK, MessageBoxImage.Information);
+                username = UsernameTextBox.Text;
+                password = PasswordBox.Password;
+                MessageBox.Show("Zapisano dane do autoryzacji Basic Auth", "", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
-                MessageBox.Show(await responseMessage.Content.ReadAsStringAsync(), "", MessageBoxButton.OK, MessageBoxImage.Information);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                AuthenticateRequest user = new AuthenticateRequest();
+                user.Username = UsernameTextBox.Text;
+                user.Password = PasswordBox.Password;
+
+                var json = JsonConvert.SerializeObject(user);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var responseMessage = await client.PostAsync("api/user", content);
+                if (responseMessage.StatusCode == System.Net.HttpStatusCode.Created)
+                {
+                    AuthenticateResponse response = JsonConvert.DeserializeObject<AuthenticateResponse>(await responseMessage.Content.ReadAsStringAsync());
+                    token = response.Token;
+                    MessageBox.Show("Pomyślnie zalogowano \n" + "Witaj " + response.Username, "", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show(await responseMessage.Content.ReadAsStringAsync(), "", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
         }
     }
